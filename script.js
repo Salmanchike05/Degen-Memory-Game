@@ -253,35 +253,76 @@ function skipAuth() {
   }
 }
 
-// Wallet connection
+// Wallet connection using Base Account SDK
 async function connectWallet() {
   try {
+    // Check if MiniApp SDK is available (running in Base App)
+    if (window.miniappSdk && window.miniappSdk.context) {
+      const user = window.miniappSdk.context.user;
+      
+      if (user && user.fid) {
+        // Get user info from Base Account
+        const username = user.username || `User ${user.fid}`;
+        const address = user.custodyAddress || `user_${user.fid}`;
+        
+        // Get data from modal
+        const level = parseInt(document.getElementById('authLevel').textContent);
+        const moves = parseInt(document.getElementById('authMoves').textContent);
+        
+        // Save to leaderboard with username
+        addToLeaderboard(level, moves, username);
+        
+        alert(`Connected! Result saved to leaderboard! 🎉\nUsername: ${username}`);
+        
+        closeAuthModal();
+        if (window.authCallback) {
+          window.authCallback();
+        }
+        return;
+      }
+    }
+    
+    // Fallback: try MetaMask if not in Base App (for development)
     if (typeof window.ethereum !== 'undefined') {
-      // MetaMask is available
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
       const address = await signer.getAddress();
       
-      // Get data from modal
       const level = parseInt(document.getElementById('authLevel').textContent);
       const moves = parseInt(document.getElementById('authMoves').textContent);
       
-      // Save to leaderboard
-      addToLeaderboard(level, moves, address);
+      // For fallback, use address but show as "Anonymous"
+      addToLeaderboard(level, moves, 'Anonymous');
       
-      alert(`Wallet connected! Result saved to leaderboard! 🎉\nAddress: ${address.substring(0, 6)}...${address.substring(38)}`);
+      alert(`Wallet connected! Result saved to leaderboard! 🎉`);
       
       closeAuthModal();
       if (window.authCallback) {
         window.authCallback();
       }
     } else {
-      alert('MetaMask is not installed! Please install MetaMask browser extension.');
+      // Save without wallet (anonymous)
+      const level = parseInt(document.getElementById('authLevel').textContent);
+      const moves = parseInt(document.getElementById('authMoves').textContent);
+      addToLeaderboard(level, moves, 'Anonymous');
+      alert('Result saved anonymously to leaderboard! 🎉');
+      closeAuthModal();
+      if (window.authCallback) {
+        window.authCallback();
+      }
     }
   } catch (error) {
-    console.error('Wallet connection error:', error);
-    alert('Wallet connection error. Please try again.');
+    console.error('Connection error:', error);
+    // Fallback: save anonymously
+    const level = parseInt(document.getElementById('authLevel').textContent);
+    const moves = parseInt(document.getElementById('authMoves').textContent);
+    addToLeaderboard(level, moves, 'Anonymous');
+    alert('Result saved to leaderboard! 🎉');
+    closeAuthModal();
+    if (window.authCallback) {
+      window.authCallback();
+    }
   }
 }
 
@@ -321,18 +362,19 @@ function showLeaderboardLevel(level) {
     return;
   }
   
-  let html = '<table><thead><tr><th>#</th><th>Wallet Address</th><th>Moves</th><th>Date</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>#</th><th>Player</th><th>Moves</th><th>Date</th></tr></thead><tbody>';
   
   levelData.forEach((entry, index) => {
     const rank = index + 1;
-    const wallet = entry.wallet === 'Anonymous' 
-      ? 'Anonymous' 
-      : `${entry.wallet.substring(0, 6)}...${entry.wallet.substring(38)}`;
+    // Show username directly (not address), as per Base guidelines
+    const displayName = entry.wallet === 'Anonymous' || entry.wallet.startsWith('0x') || entry.wallet.startsWith('user_')
+      ? (entry.wallet === 'Anonymous' ? 'Anonymous' : `Player ${rank}`)
+      : entry.wallet; // Already a username
     const date = new Date(entry.date).toLocaleDateString('en-US');
     
     html += `<tr>
       <td>${rank}</td>
-      <td>${wallet}</td>
+      <td>${displayName}</td>
       <td>${entry.moves}</td>
       <td>${date}</td>
     </tr>`;
@@ -342,15 +384,33 @@ function showLeaderboardLevel(level) {
   table.innerHTML = html;
 }
 
+// Onboarding
+function closeOnboarding() {
+  document.getElementById('onboardingModal').style.display = 'none';
+  localStorage.setItem('onboardingShown', 'true');
+}
+
+// Show onboarding on first visit
+document.addEventListener('DOMContentLoaded', () => {
+  const onboardingShown = localStorage.getItem('onboardingShown');
+  if (!onboardingShown) {
+    document.getElementById('onboardingModal').style.display = 'block';
+  }
+});
+
 // Close modals when clicking outside them
 window.onclick = function(event) {
   const leaderboardModal = document.getElementById('leaderboardModal');
   const authModal = document.getElementById('authModal');
+  const onboardingModal = document.getElementById('onboardingModal');
   
   if (event.target === leaderboardModal) {
     closeLeaderboard();
   }
   if (event.target === authModal) {
     closeAuthModal();
+  }
+  if (event.target === onboardingModal) {
+    closeOnboarding();
   }
 }

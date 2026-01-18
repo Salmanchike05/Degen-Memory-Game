@@ -6,6 +6,55 @@ body {
     margin: 0;
     padding: 20px;
   }
+
+  /* Light mode support */
+  @media (prefers-color-scheme: light) {
+    body {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    h1 {
+      color: #0052ff;
+    }
+
+    h2 {
+      color: #0066cc;
+    }
+
+    .modal-content {
+      background: white;
+      color: #333;
+      border: 2px solid #e0e0e0;
+    }
+
+    .level-btn {
+      background: linear-gradient(135deg, #0066cc 0%, #0099ff 100%);
+      border: 2px solid rgba(0, 102, 204, 0.3);
+      color: white;
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+    }
+
+    .card-back {
+      background: linear-gradient(135deg, #0052ff 0%, #0099ff 100%);
+    }
+
+    .leaderboard-table th {
+      background: rgba(0, 102, 204, 0.1);
+      color: #0066cc;
+    }
+
+    .leaderboard-table tr:hover {
+      background: rgba(0, 102, 204, 0.05);
+    }
+
+    .footer {
+      color: #666;
+    }
+  }
   
   h1 {
     color: #00ff9d;
@@ -144,7 +193,8 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 12px 24px;
+    padding: 14px 24px;
+    min-height: 44px;
     background: linear-gradient(135deg, #0052ff 0%, #00ebff 100%);
     border: 2px solid rgba(0, 243, 255, 0.3);
     border-radius: 8px;
@@ -154,6 +204,9 @@ body {
     font-weight: bold;
     transition: all 0.3s;
     z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .leaderboard-btn:hover {
@@ -208,7 +261,8 @@ body {
   }
 
   .tab-btn {
-    padding: 10px 20px;
+    padding: 12px 20px;
+    min-height: 44px;
     background: rgba(0, 82, 255, 0.3);
     border: 2px solid rgba(0, 243, 255, 0.3);
     border-radius: 8px;
@@ -216,6 +270,9 @@ body {
     cursor: pointer;
     transition: all 0.3s;
     font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .tab-btn:hover {
@@ -311,4 +368,49 @@ body {
     color: #00f3ff;
     font-weight: bold;
     text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+  }
+
+  /* Onboarding modal */
+  .onboarding-modal {
+    z-index: 3000;
+  }
+
+  .onboarding-content {
+    max-width: 600px;
+  }
+
+  .onboarding-steps {
+    text-align: left;
+    margin: 30px 0;
+  }
+
+  .onboarding-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    gap: 15px;
+  }
+
+  .step-number {
+    background: linear-gradient(135deg, #0052ff 0%, #00ebff 100%);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+
+  .onboarding-step p {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 16px;
+  }
+
+  .onboarding-step strong {
+    color: #00f3ff;
   }

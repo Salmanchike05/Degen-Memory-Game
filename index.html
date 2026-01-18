@@ -22,6 +22,32 @@
 <body>
   <h1>Degen Memory Game</h1>
   
+  <!-- Onboarding modal -->
+  <div class="modal onboarding-modal" id="onboardingModal">
+    <div class="modal-content onboarding-content">
+      <h2>🎮 Welcome to Degen Memory!</h2>
+      <div class="onboarding-steps">
+        <div class="onboarding-step">
+          <div class="step-number">1</div>
+          <p><strong>Match Pairs:</strong> Click on cards to flip them and find matching token pairs</p>
+        </div>
+        <div class="onboarding-step">
+          <div class="step-number">2</div>
+          <p><strong>Complete Levels:</strong> Start with Level 1 (Easy) and progress to harder challenges</p>
+        </div>
+        <div class="onboarding-step">
+          <div class="step-number">3</div>
+          <p><strong>Beat Records:</strong> Complete levels in fewer moves to rank higher on the leaderboard</p>
+        </div>
+        <div class="onboarding-step">
+          <div class="step-number">4</div>
+          <p><strong>Compete:</strong> Your best scores will be saved automatically when you complete a level</p>
+        </div>
+      </div>
+      <button class="wallet-btn" onclick="closeOnboarding()">Let's Play!</button>
+    </div>
+  </div>
+  
   <!-- Level selection menu -->
   <div class="level-menu" id="levelMenu">
     <h2>Select Difficulty Level</h2>
@@ -79,9 +105,9 @@
       <p>Your result is on the leaderboard!</p>
       <p class="result-info">Level: <span id="authLevel"></span></p>
       <p class="result-info">Moves: <span id="authMoves"></span></p>
-      <p>Connect your crypto wallet to save your result:</p>
+      <p>Save your result to the leaderboard:</p>
       <button class="wallet-btn" onclick="connectWallet()">
-        <span>🔷</span> Connect MetaMask
+        <span>🔷</span> Save to Leaderboard
       </button>
       <button class="wallet-btn secondary" onclick="skipAuth()">Skip</button>
     </div>
