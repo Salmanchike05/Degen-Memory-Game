@@ -1,0 +1,31 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "Degen Memory Game",
+    "homeUrl": "https://your-app-domain.com",
+    "iconUrl": "https://your-app-domain.com/images/base.png",
+    "splashImageUrl": "https://your-app-domain.com/images/base.png",
+    "splashBackgroundColor": "#0f0f23",
+    "webhookUrl": "https://your-app-domain.com/api/webhook",
+    "subtitle": "Match crypto tokens",
+    "description": "A memory card game featuring 24 tokens from the Base ecosystem. Challenge yourself with 4 difficulty levels and compete on the leaderboard!",
+    "screenshotUrls": [
+      "https://your-app-domain.com/screenshot1.png",
+      "https://your-app-domain.com/screenshot2.png",
+      "https://your-app-domain.com/screenshot3.png"
+    ],
+    "primaryCategory": "games",
+    "tags": ["memory", "game", "base", "tokens", "crypto"],
+    "heroImageUrl": "https://your-app-domain.com/og-image.png",
+    "tagline": "Match tokens, beat the game",
+    "ogTitle": "Degen Memory Game",
+    "ogDescription": "Memory card game with Base ecosystem tokens. 4 difficulty levels and leaderboard!",
+    "ogImageUrl": "https://your-app-domain.com/og-image.png",
+    "noindex": false
+  }
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Degen Memory</title>
+  <meta name="fc:miniapp" content='{
+    "version":"next",
+    "imageUrl":"https://your-app-domain.com/embed-image.png",
+    "button":{
+      "title":"Play Now",
+      "action":{
+        "type":"launch_miniapp",
+        "name":"Degen Memory Game",
+        "url":"https://your-app-domain.com"
+      }
+    }
+  }' />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Degen Memory Game</h1>
+  
+  <!-- Level selection menu -->
+  <div class="level-menu" id="levelMenu">
+    <h2>Select Difficulty Level</h2>
+    <div class="level-buttons">
+      <button class="level-btn" data-level="1">
+        <div class="level-title">Level 1</div>
+        <div class="level-desc">3 × 3 (Easy)</div>
+      </button>
+      <button class="level-btn" data-level="2">
+        <div class="level-title">Level 2</div>
+        <div class="level-desc">4 × 4 (Medium)</div>
+      </button>
+      <button class="level-btn" data-level="3">
+        <div class="level-title">Level 3</div>
+        <div class="level-desc">4 × 5 (Hard)</div>
+      </button>
+      <button class="level-btn" data-level="4">
+        <div class="level-title">Level 4</div>
+        <div class="level-desc">6 × 8 (Hard - All Tokens)</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Game board -->
+  <div class="game-container" id="gameContainer" style="display: none;">
+    <div class="game-stats">
+      <div class="level-info">Level <span id="currentLevel">1</span></div>
+      <div class="moves-counter">Moves: <span id="movesCount">0</span></div>
+    </div>
+    <div class="game-board" id="gameBoard"></div>
+  </div>
+
+  <!-- Leaderboard button -->
+  <button class="leaderboard-btn" id="leaderboardBtn" onclick="showLeaderboard()">🏆 Leaderboard</button>
+
+  <!-- Leaderboard modal -->
+  <div class="modal" id="leaderboardModal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeLeaderboard()">&times;</span>
+      <h2>🏆 Leaderboard</h2>
+      <div class="leaderboard-tabs">
+        <button class="tab-btn active" onclick="showLeaderboardLevel(1)">Level 1</button>
+        <button class="tab-btn" onclick="showLeaderboardLevel(2)">Level 2</button>
+        <button class="tab-btn" onclick="showLeaderboardLevel(3)">Level 3</button>
+        <button class="tab-btn" onclick="showLeaderboardLevel(4)">Level 4</button>
+      </div>
+      <div class="leaderboard-table" id="leaderboardTable"></div>
+    </div>
+  </div>
+
+  <!-- Authentication modal -->
+  <div class="modal" id="authModal" style="display: none;">
+    <div class="modal-content">
+      <h2>🎉 Congratulations!</h2>
+      <p>Your result is on the leaderboard!</p>
+      <p class="result-info">Level: <span id="authLevel"></span></p>
+      <p class="result-info">Moves: <span id="authMoves"></span></p>
+      <p>Connect your crypto wallet to save your result:</p>
+      <button class="wallet-btn" onclick="connectWallet()">
+        <span>🔷</span> Connect MetaMask
+      </button>
+      <button class="wallet-btn secondary" onclick="skipAuth()">Skip</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Created by <span class="username">salmanchike</span></p>
+  </footer>
+
+  <!-- MiniApp SDK for Base App -->
+  <script type="module">
+    import { sdk } from 'https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/browser.js';
+    window.miniappSdk = sdk;
+    
+    // Call ready() when app is loaded
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await sdk.actions.ready();
+      } catch (error) {
+        console.log('MiniApp SDK not available (running outside Base App):', error);
+      }
+    });
+  </script>
+  
+  <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

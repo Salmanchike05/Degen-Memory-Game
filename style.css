@@ -1,0 +1,314 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #0f0f23;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  h1 {
+    color: #00ff9d;
+  }
+
+  h2 {
+    color: #00ebff;
+    margin-bottom: 30px;
+  }
+  
+  /* Меню выбора уровня */
+  .level-menu {
+    max-width: 600px;
+    margin: 40px auto;
+  }
+
+  .level-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .level-btn {
+    width: 300px;
+    padding: 20px;
+    background: linear-gradient(135deg, #0052ff 0%, #00ebff 100%);
+    border: 2px solid rgba(0, 243, 255, 0.3);
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 18px;
+  }
+
+  .level-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+    border-color: #00f3ff;
+  }
+
+  .level-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .level-desc {
+    font-size: 16px;
+    opacity: 0.9;
+  }
+
+  .game-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .game-stats {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .level-info {
+    color: #00f3ff;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .moves-counter {
+    color: #00ff9d;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .game-board {
+    display: grid;
+    gap: 15px;
+    margin: 40px auto;
+    justify-content: center;
+  }
+  
+  .card {
+    width: 100px;
+    height: 100px;
+    background: #1e90ff;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    font-size: 40px;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+  
+  .card.flipped {
+    transform: rotateY(180deg);
+  }
+  
+  .card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .card-front {
+    background: linear-gradient(135deg, #1a1f3a 0%, #2a3f5f 100%);
+    transform: rotateY(180deg);
+    padding: 8px;
+  }
+  
+  .card-front img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 5px;
+  }
+  
+  .card-back {
+    background: linear-gradient(135deg, #0052ff 0%, #00ebff 100%);
+    color: white;
+    font-size: 60px;
+    font-weight: bold;
+  }
+
+  /* Кнопка таблицы лидеров */
+  .leaderboard-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #0052ff 0%, #00ebff 100%);
+    border: 2px solid rgba(0, 243, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s;
+    z-index: 1000;
+  }
+
+  .leaderboard-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+    border-color: #00f3ff;
+  }
+
+  /* Модальные окна */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    overflow: auto;
+  }
+
+  .modal-content {
+    background: linear-gradient(135deg, #1a1f3a 0%, #2a3f5f 100%);
+    margin: 10% auto;
+    padding: 30px;
+    border: 2px solid rgba(0, 243, 255, 0.3);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 700px;
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .close:hover {
+    color: #00f3ff;
+  }
+
+  /* Вкладки таблицы лидеров */
+  .leaderboard-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+
+  .tab-btn {
+    padding: 10px 20px;
+    background: rgba(0, 82, 255, 0.3);
+    border: 2px solid rgba(0, 243, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+  }
+
+  .tab-btn:hover {
+    background: rgba(0, 82, 255, 0.5);
+    border-color: #00f3ff;
+  }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, #0052ff 0%, #00ebff 100%);
+    border-color: #00f3ff;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+  }
+
+  /* Таблица лидеров */
+  .leaderboard-table {
+    overflow-x: auto;
+  }
+
+  .leaderboard-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+  }
+
+  .leaderboard-table th {
+    background: rgba(0, 82, 255, 0.2);
+    color: #00f3ff;
+    font-weight: bold;
+  }
+
+  .leaderboard-table tr:hover {
+    background: rgba(0, 243, 255, 0.1);
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 40px;
+    color: #aaa;
+    font-size: 18px;
+  }
+
+  /* Кнопки кошелька */
+  .wallet-btn {
+    width: 100%;
+    padding: 15px 30px;
+    margin: 10px 0;
+    background: linear-gradient(135deg, #0052ff 0%, #00ebff 100%);
+    border: 2px solid rgba(0, 243, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s;
+  }
+
+  .wallet-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+    border-color: #00f3ff;
+  }
+
+  .wallet-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .wallet-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .result-info {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #00f3ff;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 60px;
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+  }
+
+  .footer .username {
+    color: #00f3ff;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+  }
