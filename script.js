@@ -398,7 +398,7 @@ async function connectWalletOnStart() {
     const loginBtn = document.querySelector('.login-btn');
     if (loginBtn) {
       loginBtn.disabled = true;
-      loginBtn.textContent = 'Connecting...';
+      loginBtn.innerHTML = '<span>⏳</span> Connecting...';
     }
 
     // Wait a bit for SDK to initialize
@@ -410,6 +410,7 @@ async function connectWalletOnStart() {
       
       if (user && user.fid) {
         // User is already connected via Base App
+        console.log('Connected via Base App SDK:', user);
         isWalletConnected = true;
         hideLoginScreen();
         showOnboardingIfNeeded();
@@ -417,13 +418,15 @@ async function connectWalletOnStart() {
       }
     }
     
-    // Fallback: try MetaMask if not in Base App (for development)
+    // Check for MetaMask or other Web3 wallets
     if (typeof window.ethereum !== 'undefined') {
       try {
+        console.log('MetaMask detected, requesting connection...');
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const accounts = await provider.send("eth_requestAccounts", []);
         
         if (accounts && accounts.length > 0) {
+          console.log('MetaMask connected:', accounts[0]);
           isWalletConnected = true;
           hideLoginScreen();
           showOnboardingIfNeeded();
@@ -432,18 +435,25 @@ async function connectWalletOnStart() {
       } catch (metaMaskError) {
         console.error('MetaMask connection error:', metaMaskError);
         if (metaMaskError.code === 4001) {
-          alert('Please connect your wallet to continue.');
+          // User rejected the request
           if (loginBtn) {
             loginBtn.disabled = false;
             loginBtn.innerHTML = '<span>🔷</span> Connect Wallet';
           }
+          alert('Wallet connection was rejected. Click "Skip" to play without saving scores.');
           return;
+        } else {
+          // Other error
+          console.error('MetaMask error:', metaMaskError);
         }
       }
+    } else {
+      console.log('No Web3 wallet detected');
     }
     
-    // If no wallet available, allow to continue
-    alert('Wallet not available. You can play, but scores won\'t be saved to leaderboard.');
+    // If we reach here, no wallet was connected
+    // Don't show alert, just allow to continue
+    console.log('No wallet connected, allowing to continue');
     isWalletConnected = false;
     hideLoginScreen();
     showOnboardingIfNeeded();
@@ -452,9 +462,21 @@ async function connectWalletOnStart() {
     console.error('Wallet connection error:', error);
     // Allow to continue without wallet
     isWalletConnected = false;
+    if (loginBtn) {
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = '<span>🔷</span> Connect Wallet';
+    }
     hideLoginScreen();
     showOnboardingIfNeeded();
   }
+}
+
+// Allow to skip wallet connection
+function skipWalletConnection() {
+  console.log('Skipping wallet connection');
+  isWalletConnected = false;
+  hideLoginScreen();
+  showOnboardingIfNeeded();
 }
 
 function hideLoginScreen() {
