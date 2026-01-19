@@ -8,7 +8,7 @@
     "version": "1",
     "name": "Degen Memory Game",
     "homeUrl": "https://your-app-domain.com",
-    "iconUrl": "https://your-app-domain.com/images/base.png",
+    "iconUrl": "https://your-app-domain.com/favicon.svg",
     "splashImageUrl": "https://your-app-domain.com/images/base.png",
     "splashBackgroundColor": "#0f0f23",
     "webhookUrl": "https://your-app-domain.com/api/webhook",

@@ -390,12 +390,88 @@ function closeOnboarding() {
   localStorage.setItem('onboardingShown', 'true');
 }
 
-// Show onboarding on first visit
-document.addEventListener('DOMContentLoaded', () => {
+// Wallet connection on app start
+let isWalletConnected = false;
+
+async function connectWalletOnStart() {
+  try {
+    // Check if MiniApp SDK is available (running in Base App)
+    if (window.miniappSdk && window.miniappSdk.context) {
+      const user = window.miniappSdk.context.user;
+      
+      if (user && user.fid) {
+        // User is already connected via Base App
+        isWalletConnected = true;
+        hideLoginScreen();
+        showOnboardingIfNeeded();
+        return;
+      }
+    }
+    
+    // Fallback: try MetaMask if not in Base App (for development)
+    if (typeof window.ethereum !== 'undefined') {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      isWalletConnected = true;
+      hideLoginScreen();
+      showOnboardingIfNeeded();
+    } else {
+      // Allow to continue without wallet (for testing)
+      alert('Wallet not available. You can play, but scores won\'t be saved to leaderboard.');
+      isWalletConnected = false;
+      hideLoginScreen();
+      showOnboardingIfNeeded();
+    }
+  } catch (error) {
+    console.error('Wallet connection error:', error);
+    // Allow to continue without wallet
+    isWalletConnected = false;
+    hideLoginScreen();
+    showOnboardingIfNeeded();
+  }
+}
+
+function hideLoginScreen() {
+  const loginScreen = document.getElementById('loginScreen');
+  if (loginScreen) {
+    loginScreen.style.display = 'none';
+  }
+  // Show main content
+  const levelMenu = document.getElementById('levelMenu');
+  if (levelMenu) {
+    levelMenu.style.display = 'block';
+  }
+}
+
+function showOnboardingIfNeeded() {
   const onboardingShown = localStorage.getItem('onboardingShown');
   if (!onboardingShown) {
     document.getElementById('onboardingModal').style.display = 'block';
   }
+}
+
+// Check wallet connection on app load
+document.addEventListener('DOMContentLoaded', async () => {
+  // Wait a bit for SDK to initialize
+  setTimeout(() => {
+    // Check if already connected via Base App
+    if (window.miniappSdk && window.miniappSdk.context && window.miniappSdk.context.user) {
+      isWalletConnected = true;
+      hideLoginScreen();
+      showOnboardingIfNeeded();
+    } else {
+      // Show login screen
+      const loginScreen = document.getElementById('loginScreen');
+      if (loginScreen) {
+        loginScreen.style.display = 'flex';
+      }
+      // Hide main content until connected
+      const levelMenu = document.getElementById('levelMenu');
+      if (levelMenu) {
+        levelMenu.style.display = 'none';
+      }
+    }
+  }, 500);
 });
 
 // Close modals when clicking outside them

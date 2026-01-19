@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Degen Memory</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
   <meta name="base:app_id" content="696d4529f22fe462e74c13ea" />
   <meta name="fc:miniapp" content='{
     "version":"next",
@@ -22,8 +24,21 @@
 <body>
   <h1>Degen Memory Game</h1>
   
+  <!-- Login/Wallet Connection Screen -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-content">
+      <div class="login-icon">🧠</div>
+      <h2>Welcome to Degen Memory!</h2>
+      <p>Connect your wallet to start playing and compete on the leaderboard</p>
+      <button class="wallet-btn login-btn" onclick="connectWalletOnStart()">
+        <span>🔷</span> Connect Wallet
+      </button>
+      <p class="login-note">Your wallet will be used to save your scores</p>
+    </div>
+  </div>
+  
   <!-- Onboarding modal -->
-  <div class="modal onboarding-modal" id="onboardingModal">
+  <div class="modal onboarding-modal" id="onboardingModal" style="display: none;">
     <div class="modal-content onboarding-content">
       <h2>🎮 Welcome to Degen Memory!</h2>
       <div class="onboarding-steps">
@@ -49,7 +64,7 @@
   </div>
   
   <!-- Level selection menu -->
-  <div class="level-menu" id="levelMenu">
+  <div class="level-menu" id="levelMenu" style="display: none;">
     <h2>Select Difficulty Level</h2>
     <div class="level-buttons">
       <button class="level-btn" data-level="1">
