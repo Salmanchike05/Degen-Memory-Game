@@ -395,6 +395,15 @@ let isWalletConnected = false;
 
 async function connectWalletOnStart() {
   try {
+    const loginBtn = document.querySelector('.login-btn');
+    if (loginBtn) {
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Connecting...';
+    }
+
+    // Wait a bit for SDK to initialize
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     // Check if MiniApp SDK is available (running in Base App)
     if (window.miniappSdk && window.miniappSdk.context) {
       const user = window.miniappSdk.context.user;
@@ -410,18 +419,35 @@ async function connectWalletOnStart() {
     
     // Fallback: try MetaMask if not in Base App (for development)
     if (typeof window.ethereum !== 'undefined') {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      isWalletConnected = true;
-      hideLoginScreen();
-      showOnboardingIfNeeded();
-    } else {
-      // Allow to continue without wallet (for testing)
-      alert('Wallet not available. You can play, but scores won\'t be saved to leaderboard.');
-      isWalletConnected = false;
-      hideLoginScreen();
-      showOnboardingIfNeeded();
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const accounts = await provider.send("eth_requestAccounts", []);
+        
+        if (accounts && accounts.length > 0) {
+          isWalletConnected = true;
+          hideLoginScreen();
+          showOnboardingIfNeeded();
+          return;
+        }
+      } catch (metaMaskError) {
+        console.error('MetaMask connection error:', metaMaskError);
+        if (metaMaskError.code === 4001) {
+          alert('Please connect your wallet to continue.');
+          if (loginBtn) {
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<span>🔷</span> Connect Wallet';
+          }
+          return;
+        }
+      }
     }
+    
+    // If no wallet available, allow to continue
+    alert('Wallet not available. You can play, but scores won\'t be saved to leaderboard.');
+    isWalletConnected = false;
+    hideLoginScreen();
+    showOnboardingIfNeeded();
+    
   } catch (error) {
     console.error('Wallet connection error:', error);
     // Allow to continue without wallet
@@ -452,8 +478,8 @@ function showOnboardingIfNeeded() {
 
 // Check wallet connection on app load
 document.addEventListener('DOMContentLoaded', async () => {
-  // Wait a bit for SDK to initialize
-  setTimeout(() => {
+  // Wait for SDK to initialize
+  const checkConnection = () => {
     // Check if already connected via Base App
     if (window.miniappSdk && window.miniappSdk.context && window.miniappSdk.context.user) {
       isWalletConnected = true;
@@ -471,7 +497,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         levelMenu.style.display = 'none';
       }
     }
-  }, 500);
+  };
+
+  // Listen for SDK ready event
+  window.addEventListener('sdkUserConnected', (event) => {
+    isWalletConnected = true;
+    hideLoginScreen();
+    showOnboardingIfNeeded();
+  });
+
+  // Check immediately and after delay
+  setTimeout(checkConnection, 1000);
+  setTimeout(checkConnection, 2000);
 });
 
 // Close modals when clicking outside them

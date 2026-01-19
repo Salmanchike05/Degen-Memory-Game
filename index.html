@@ -137,15 +137,24 @@
   <script type="module">
     import { sdk } from 'https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/browser.js';
     window.miniappSdk = sdk;
+    window.sdkReady = false;
     
-    // Call ready() when app is loaded
-    document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize SDK
+    (async () => {
       try {
         await sdk.actions.ready();
+        window.sdkReady = true;
+        
+        // Check if user is already connected
+        if (sdk.context && sdk.context.user) {
+          window.dispatchEvent(new CustomEvent('sdkUserConnected', { detail: sdk.context.user }));
+        }
       } catch (error) {
         console.log('MiniApp SDK not available (running outside Base App):', error);
+        window.sdkReady = false;
+        window.dispatchEvent(new CustomEvent('sdkReady', { detail: false }));
       }
-    });
+    })();
   </script>
   
   <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
